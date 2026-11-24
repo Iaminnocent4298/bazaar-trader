@@ -1,0 +1,31 @@
+{
+  "seed": 42,
+  "train_items": [
+    "BOOSTER_COOKIE",
+    "SLUDGE_JUICE",
+    "ENCHANTED_DIAMOND",
+    "ENCHANTED_COAL",
+    "GLOSSY_GEMSTONE",
+    "STOCK_OF_STONKS",
+    "ESSENCE_CRIMSON",
+    "SUMMONING_EYE",
+    "GEMSTONE_MIXTURE",
+    "ENCHANTED_POTATO"
+  ],
+  "held_out_items": [
+    "ENCHANTED_TUNGSTEN",
+    "RECOMBOBULATOR_3000"
+  ],
+  "train_period": [
+    "2026-10-25 21:55:00",
+    "2026-11-12 21:35:00"
+  ],
+  "validation_period": [
+    "2026-11-13 21:35:00",
+    "2026-11-18 21:35:00"
+  ],
+  "test_period": [
+    "2026-11-19 21:35:00",
+    "2026-11-24 21:35:00"
+  ]
+}

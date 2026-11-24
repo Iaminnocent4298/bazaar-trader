@@ -5,14 +5,12 @@ from datetime import datetime, timedelta, timezone
 import pandas as pd
 
 from fetch_history import fetch_history  # reuses our retry logic
+from pool import POOL
 
 OUT_DIR = "history"
-DAYS = 14
+DAYS = 30
 CHUNK_HOURS = 12
 PAUSE_SECONDS = 1.0
-
-ITEMS = ["ENCHANTED_DIAMOND", "ENCHANTED_IRON", "ENCHANTED_GOLD", "BOOSTER_COOKIE"]
-
 
 def download_item(tag, end, days):
     """Walk backwards from `end` in chunks, collecting all rows."""
@@ -49,7 +47,7 @@ def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     end = datetime.now(timezone.utc)
 
-    for tag in ITEMS:
+    for tag in POOL:
         print(f"{tag}: downloading {DAYS} days...")
         rows = download_item(tag, end, DAYS)
         if not rows:

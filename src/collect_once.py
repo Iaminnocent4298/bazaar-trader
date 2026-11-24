@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timezone
 
 from collect import fetch_snapshot
+from pool import POOL
 
 MIN_WEEKLY_VOLUME = 1_000_000
 LEVELS = 3  # how many order-book levels to save per side
@@ -39,11 +40,16 @@ def main():
     now = datetime.now(timezone.utc)
     timestamp = now.isoformat()
     api_updated = data.get("lastUpdated", "")
+    missing = [t for t in POOL if t not in data["products"]]
+    if missing:
+        print("WARNING: not found in Hypixel data:", missing)
 
     rows = []
     for product_id, p in data["products"].items():
         q = p["quick_status"]
-        if q["sellMovingWeek"] <= MIN_WEEKLY_VOLUME or q["buyMovingWeek"] <= MIN_WEEKLY_VOLUME:
+        low_volume = (q["sellMovingWeek"] <= MIN_WEEKLY_VOLUME
+                      or q["buyMovingWeek"] <= MIN_WEEKLY_VOLUME)
+        if low_volume and product_id not in POOL:
             continue
         rows.append([
             timestamp, api_updated, product_id,
