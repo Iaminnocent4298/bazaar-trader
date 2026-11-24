@@ -2,7 +2,7 @@ name: Collect Bazaar data
 
 on:
   schedule:
-    - cron: "3-58/5 * * * *"
+    - cron: "17,47 * * * *"   # twice an hour, at :17 and :47
   workflow_dispatch:         # adds a manual "Run workflow" button
 
 permissions:
@@ -16,9 +16,8 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
