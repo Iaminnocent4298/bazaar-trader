@@ -2,7 +2,7 @@ name: Collect Bazaar data
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes (the minimum allowed)
+    - cron: "3-58/5 * * * *"
   workflow_dispatch:         # adds a manual "Run workflow" button
 
 permissions:
