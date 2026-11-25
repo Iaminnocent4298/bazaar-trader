@@ -3,6 +3,7 @@
 import json
 
 import pandas as pd
+import numpy as np
 
 from features import FEATURE_NAMES, compute_features
 
@@ -42,7 +43,8 @@ def scale_features(features):
         stats = json.load(f)
     out = features.copy()
     for name in FEATURE_NAMES:
-        out[name] = ((out[name] - stats[name]["center"]) / stats[name]["scale"]).clip(-CLIP, CLIP)
+        z = (out[name] - stats[name]["center"]) / stats[name]["scale"]
+        out[name] = (np.sign(z) * np.log1p(z.abs())).clip(-CLIP, CLIP)  # compress tails smoothly
     return out
 
 

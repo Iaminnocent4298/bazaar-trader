@@ -20,19 +20,19 @@ class Baseline:
         self.min_margin = min_margin   # only enter if the after-tax margin is at least this
         self.max_hold = max_hold       # give up and sell instantly after this many 5-min steps
 
-    def buy_price(self, ask, bid):
+    def buy_price(self, ask, bid, x=None):
         buy = bid + TICK
         sell = ask - TICK
         margin = sell * (1 - TAX) / buy - 1
         return buy if margin >= self.min_margin else None
 
-    def sell_price(self, ask, bid, held_steps):
+    def sell_price(self, ask, bid, held_steps, x=None):
         if held_steps >= self.max_hold:
             return None  # None means "sell instantly at the best bid"
         return ask - TICK
 
 
-def run_episode(window, strategy, fill_margin=0.0):
+def run_episode(window, strategy, fill_margin=0.0, features=None):
     missing = [c for c in REQUIRED_COLUMNS if c not in window.columns]
     if missing:
         raise KeyError(f"Missing columns {missing}. Available: {list(window.columns)}")
@@ -53,8 +53,9 @@ def run_episode(window, strategy, fill_margin=0.0):
 
     for i in range(n - 1):
         # Decide using only row i, then judge the fill using row i+1.
+        x = None if features is None else features[i]  # scaled features at row i
         if not holding:
-            price = strategy.buy_price(ask[i], bid[i])
+            price = strategy.buy_price(ask[i], bid[i], x)
             if price is None:
                 continue
             buy_attempts += 1
@@ -65,7 +66,7 @@ def run_episode(window, strategy, fill_margin=0.0):
                 holding, entry_price, entry_step, held_steps = True, price, i + 1, 0
         else:
             held_steps += 1
-            price = strategy.sell_price(ask[i], bid[i], held_steps)
+            price = strategy.sell_price(ask[i], bid[i], held_steps, x)
             if price is None:  # forced exit: instant sell at the best bid
                 trades.append(_trade(entry_step, i, entry_price, bid[i], "forced"))
                 holding = False
